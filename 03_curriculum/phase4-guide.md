@@ -6,6 +6,15 @@
 
 ---
 
+## エージェント向け指示
+
+このドキュメントの各Stepには実施者ラベルが付いています。
+
+- **`[USER]`** — ユーザーが手動で実施する作業（ダッシュボード操作・アカウント作成など）。エージェントはこのStepの「ユーザーへの提示内容」をユーザーにそのまま提示し、完了確認を待ってから次のStepに進むこと。
+- **`[AGENT]`** — エージェントが実施する作業（コード実装・コマンド実行など）。エージェントが自律的に実行すること。
+
+---
+
 ## このPhaseで学ぶこと
 
 - **Prisma** を使ったスキーマ定義・マイグレーション・DB操作
@@ -52,7 +61,7 @@
 
 ---
 
-## Step 1：必要なパッケージをインストールする
+## Step 1 `[AGENT]`：必要なパッケージをインストールする
 
 ### やること
 
@@ -70,7 +79,7 @@
 
 ---
 
-## Step 2：Prismaスキーマを定義してマイグレーションを実行する
+## Step 2 `[AGENT]`：Prismaスキーマを定義してマイグレーションを実行する
 
 ### やること
 
@@ -109,7 +118,7 @@ npx prisma migrate dev --name add-work-model
 
 ---
 
-## Step 3：Zodバリデーションスキーマを定義する
+## Step 3 `[AGENT]`：Zodバリデーションスキーマを定義する
 
 ### やること
 
@@ -140,7 +149,7 @@ npx prisma migrate dev --name add-work-model
 
 ---
 
-## Step 4：Server Actions を実装する
+## Step 4 `[AGENT]`：Server Actions を実装する
 
 ### やること
 
@@ -174,7 +183,7 @@ npx prisma migrate dev --name add-work-model
 
 ---
 
-## Step 5：作品投稿フォームを実装する
+## Step 5 `[AGENT]`：作品投稿フォームを実装する
 
 ### やること
 
@@ -204,7 +213,7 @@ npx prisma migrate dev --name add-work-model
 
 ---
 
-## Step 6：作品編集フォームを実装する
+## Step 6 `[AGENT]`：作品編集フォームを実装する
 
 ### やること
 
@@ -227,7 +236,7 @@ npx prisma migrate dev --name add-work-model
 
 ---
 
-## Step 7：削除機能を実装する
+## Step 7 `[AGENT]`：削除機能を実装する
 
 ### やること
 
@@ -250,7 +259,7 @@ npx prisma migrate dev --name add-work-model
 
 ---
 
-## Step 8：ダミーデータを実データに差し替える
+## Step 8 `[AGENT]`：ダミーデータを実データに差し替える
 
 ### やること
 
