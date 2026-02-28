@@ -70,20 +70,22 @@ UploadThingにアカウントを作成し、APIキーを取得する。
 > 2. GitHubアカウントでサインアップ
 > 3. 「Create a new app」をクリック
 > 4. アプリ名を入力（例：`my-folio`）して作成
-> 5. 「API Keys」から以下の2つを取得する
+> 5. 「API Keys」→ **「SDK v7+」タブ** を選択する（「Legacy」タブではないことに注意）
+> 6. 「Copy」ボタンをクリックして `.env.local` 用の値をコピーする
 >
-> | キー       | 環境変数名           |
-> | ---------- | -------------------- |
-> | Secret Key | `UPLOADTHING_SECRET` |
-> | App ID     | `UPLOADTHING_APP_ID` |
+> | キー  | 環境変数名          |
+> | ----- | ------------------- |
+> | Token | `UPLOADTHING_TOKEN` |
 >
-> 6. `.env.local` に追加する
+> 7. `.env.local` に追加する
+>
+> ⚠️ 「Legacy」タブに表示される `UPLOADTHING_SECRET` / `UPLOADTHING_APP_ID` は旧方式のため使わないこと。
 >
 > 完了したら教えてください。
 
 ### 完了確認
 
-- `.env.local` に `UPLOADTHING_SECRET` と `UPLOADTHING_APP_ID` が追加されていること
+- `.env.local` に `UPLOADTHING_TOKEN` が追加されていること
 
 ---
 
@@ -95,13 +97,15 @@ UploadThingのNext.js用パッケージをインストールする。
 
 ### インストールするパッケージ
 
-- `uploadthing`
-- `@uploadthing/react`
-- `@uploadthing/next`
+- `uploadthing@latest`（v7以上であること）
+- `@uploadthing/react@latest`
+- `@uploadthing/next@latest`
+
+> ⚠️ v7未満では `UPLOADTHING_TOKEN` が使えない。必ず `@latest` を指定してインストールすること。
 
 ### エージェントへの指示例
 
-> uploadthing・@uploadthing/react・@uploadthing/next をインストールしてください。
+> uploadthing・@uploadthing/react・@uploadthing/next を `@latest` を付けてインストールしてください。インストール後に `package.json` でバージョンが v7 以上であることを確認してください。
 
 ### 確認ポイント
 
@@ -198,12 +202,11 @@ UploadThingのAPIキーをVercelの環境変数に追加する。
 > 以下の作業を手動で実施してください。
 >
 > 1. Vercelダッシュボード →「Settings」→「Environment Variables」を開く
-> 2. 以下の2つを追加する
+> 2. 以下を追加する
 >
-> | キー                 | 値                                    |
-> | -------------------- | ------------------------------------- |
-> | `UPLOADTHING_SECRET` | UploadThingダッシュボードのSecret Key |
-> | `UPLOADTHING_APP_ID` | UploadThingダッシュボードのApp ID     |
+> | キー                | 値                                              |
+> | ------------------- | ----------------------------------------------- |
+> | `UPLOADTHING_TOKEN` | UploadThingダッシュボードのToken（SDK v7+タブ） |
 >
 > 3. 追加後に再デプロイする（Vercelは環境変数追加後に自動で再デプロイはしない）
 >
@@ -211,7 +214,7 @@ UploadThingのAPIキーをVercelの環境変数に追加する。
 
 ### 完了確認
 
-- Vercelの環境変数に2つが追加されていること
+- Vercelの環境変数に `UPLOADTHING_TOKEN` が追加されていること
 - 本番環境でも画像アップロードが動くこと
 
 ---
@@ -219,12 +222,12 @@ UploadThingのAPIキーをVercelの環境変数に追加する。
 ## Phase 5 完了チェックリスト
 
 - [ ] UploadThingアカウントが作成されていること
-- [ ] `.env.local` にUploadThingのキーが追加されていること
+- [ ] `.env.local` に `UPLOADTHING_TOKEN` が追加されていること
 - [ ] 作品投稿フォームから画像をアップロードできること
 - [ ] アップロード後にプレビューが表示されること
 - [ ] 画像なしで送信するとバリデーションエラーが出ること
 - [ ] トップページ・作品詳細ページに画像が表示されること
-- [ ] Vercelの環境変数にUploadThingのキーが追加されていること
+- [ ] Vercelの環境変数に `UPLOADTHING_TOKEN` が追加されていること
 - [ ] featureブランチで開発してPR→mainにマージした
 
 ---
