@@ -353,35 +353,43 @@ Stripe CLIをインストールし、ローカル開発環境でWebhookのテス
 
 ---
 
-## Step 8 `[USER]`：環境変数をVercelに追加する
+## Step 8 `[USER]`：環境変数をVercelに追加してfeatureブランチをpushする
 
 ### やること
 
-StripeのAPIキーをVercelの環境変数に追加する。
+VercelにStripeのAPIキーを追加した上で、実装したコードをpushしてデプロイする。環境変数を先に追加してからpushすることで、デプロイ時に環境変数が揃った状態になる。
 
 ### ユーザーへの提示内容
 
 > 以下の作業を手動で実施してください。
 >
-> 1. Vercelダッシュボード →「Settings」→「Environment Variables」を開く
-> 2. 以下の4つを追加する
+> **① Vercelに環境変数を追加する**
+>
+> Vercelダッシュボード →「Settings」→「Environment Variables」を開き、以下の3つを追加する
 >
 > | キー                                 | 値                                                       |
 > | ------------------------------------ | -------------------------------------------------------- |
-> | `STRIPE_SECRET_KEY`                  | Stripeダッシュボードのシークレットキー（sk*test*...）    |
-> | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripeダッシュボードの公開可能キー（pk*test*...）        |
-> | `STRIPE_WEBHOOK_SECRET`              | 本番用Webhookシークレット（Step 9で取得）                |
+> | `STRIPE_SECRET_KEY`                  | Stripeサンドボックスのシークレットキー（`sk_test_...`）  |
+> | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripeサンドボックスの公開可能キー（`pk_test_...`）      |
 > | `NEXT_PUBLIC_APP_URL`                | VercelのデプロイURL（例：`https://my-folio.vercel.app`） |
 >
-> ⚠️ `STRIPE_WEBHOOK_SECRET` はStep 9（本番Webhookエンドポイント登録）で取得する値を使う。Step 7で取得したローカル用の `whsec_...` とは別の値になる。
+> **② featureブランチにpushしてPRをマージする**
 >
-> 3. 追加後に再デプロイする
+> ```bash
+> git add .
+> git commit -m "feat: Stripe決済を実装"
+> git push origin feature/stripe
+> ```
+>
+> GitHubでPRを作成してmainにマージする。
+> VercelダッシュボードでデプロイがSuccessになるまで待つ。
 >
 > 完了したら教えてください。
 
 ### 完了確認
 
-- Vercelの環境変数に4つが追加されていること
+- Vercelの環境変数に3つが追加されていること
+- Vercelのデプロイが成功していること
 
 ---
 
@@ -389,7 +397,7 @@ StripeのAPIキーをVercelの環境変数に追加する。
 
 ### やること
 
-Stripeダッシュボードに本番（Vercel）のWebhook URLを登録し、本番用の `STRIPE_WEBHOOK_SECRET` を取得する。
+Stripeダッシュボードにデプロイ済みのVercel URLをWebhookエンドポイントとして登録し、本番用の `STRIPE_WEBHOOK_SECRET` を取得する。
 
 ### ユーザーへの提示内容
 
@@ -404,29 +412,64 @@ Stripeダッシュボードに本番（Vercel）のWebhook URLを登録し、本
 > 4. 「リッスンするイベント」で `checkout.session.completed` を選択する
 > 5. 「エンドポイントを追加」で保存する
 > 6. 登録したエンドポイントの詳細ページを開き、「署名シークレット」をコピーする
-> 7. Vercelの環境変数 `STRIPE_WEBHOOK_SECRET` をこの値で更新する
-> 8. Vercelを再デプロイする
 >
 > 完了したら教えてください。
 
 ### 完了確認
 
 - Stripeダッシュボードにエンドポイントが登録されていること
-- Vercelの `STRIPE_WEBHOOK_SECRET` が本番用の値に更新されていること
+- 署名シークレット（`whsec_...`）がコピーされていること
+
+---
+
+## Step 10 `[USER]`：STRIPE_WEBHOOK_SECRET をVercelに追加してRedeployする
+
+### やること
+
+Step 9で取得した署名シークレットをVercelに追加し、Redeployして反映させる。
+
+### ユーザーへの提示内容
+
+> 以下の作業を手動で実施してください。
+>
+> **① Vercelに環境変数を追加する**
+>
+> Vercelダッシュボード →「Settings」→「Environment Variables」を開き、以下を追加する
+>
+> | キー                    | 値                                                |
+> | ----------------------- | ------------------------------------------------- |
+> | `STRIPE_WEBHOOK_SECRET` | Step 9でコピーした署名シークレット（`whsec_...`） |
+>
+> **② Redeployする**
+>
+> Vercelダッシュボード →「Deployments」タブを開き、最新のデプロイの「…」メニューから「Redeploy」をクリックする。
+>
+> 完了したら教えてください。
+
+### 完了確認
+
+- Vercelの環境変数に `STRIPE_WEBHOOK_SECRET` が追加されていること
+- Redeployが成功していること
+- 本番URL（Vercel）で「購入する」ボタンをクリックするとStripe Checkoutに遷移すること
+- テストカード番号（`4242 4242 4242 4242`）で購入が完了し、`/works/[id]/success` にリダイレクトされること
+
+> 💡 サンドボックスのAPIキーを使っているため、本番URLでもテストカードが使える。実際のお金は動かない。
 
 ---
 
 ## Phase 6 完了チェックリスト
 
-- [ ] Stripeアカウントが作成されていること（テストモード）
+- [ ] Stripeアカウントが作成されていること（サンドボックス）
 - [ ] `.env.local` に Stripe の環境変数が追加されていること
 - [ ] 有料作品の詳細ページに「購入する」ボタンが表示されること
 - [ ] 「購入する」ボタンをクリックするとStripe Checkoutに遷移すること
-- [ ] テストカード番号（`4242 4242 4242 4242`）で購入が完了すること
+- [ ] テストカード番号（`4242 4242 4242 4242`）でローカルの購入フローが完了すること
 - [ ] 購入完了後に `/works/[id]/success` にリダイレクトされること
 - [ ] ローカルでWebhookのテストイベントが受信できること
-- [ ] Vercelの環境変数にStripeのキーが追加されていること
+- [ ] Vercelの環境変数に `STRIPE_SECRET_KEY`・`NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`・`NEXT_PUBLIC_APP_URL` が追加されていること
 - [ ] 本番WebhookエンドポイントがStripeに登録されていること
+- [ ] Vercelの環境変数に `STRIPE_WEBHOOK_SECRET` が追加されていること
+- [ ] 本番URL（Vercel）でもテストカードで購入フロー全体が動くこと
 - [ ] featureブランチで開発してPR→mainにマージした
 
 ---
